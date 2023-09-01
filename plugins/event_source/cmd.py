@@ -78,18 +78,22 @@ async def process_output(
 
 async def main(queue: asyncio.Queue, args: Dict[str, Any]):
     command = str(args["command"])
+    repository = str(args["repository"])
     send_output = False
     stdout_mode = asyncio.subprocess.DEVNULL
 
     deserialize = bool(args.get("deserialize", True))
     send_output = bool(args.get("send_output", False))
 
+    # Clone repo
+    cloning = await asyncio.create_subprocess_shell('git clone --quiet ' + repository, stdout=stdout_mode)
+    await cloning.wait()
+
     if send_output:
         stdout_mode = asyncio.subprocess.PIPE
 
-    cmd_tokens = shlex.split(command)
-    proc = await asyncio.subprocess.create_subprocess_exec(
-        *cmd_tokens,
+    proc = await asyncio.subprocess.create_subprocess_shell(
+        command,
         stdout=stdout_mode,
         stderr=asyncio.subprocess.PIPE,
     )
