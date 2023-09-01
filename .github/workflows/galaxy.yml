@@ -20,4 +20,4 @@
             uses: artis3n/ansible_galaxy_collection@v2
             with:
               api_key: '${{ secrets.GALAXY_API_KEY }}'
-              galaxy_version: 1.0.0
+              galaxy_version: 1.0.1
